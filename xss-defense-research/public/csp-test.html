@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSP Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .warning {
+      color: orange;
+      font-weight: bold;
+    }
+    .failure {
+      color: red;
+      font-weight: bold;
+    }
+    .test-section {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Content Security Policy Test Results</h1>
+  
+  <div class="container">
+    <h2>CSP Configuration</h2>
+    <p id="csp-header">Checking CSP header...</p>
+    <p id="nonce-value">Nonce: checking...</p>
+  </div>
+  
+  <div class="container">
+    <h2>Test Results</h2>
+    
+    <div class="test-section">
+      <h3>1. Nonced Script Execution</h3>
+      <p>This script has a nonce and should execute:</p>
+      <p id="nonced-script-result" class="failure">❌ Test failed or didn't run</p>
+    </div>
+    
+    <div class="test-section">
+      <h3>2. Inline Script Blocking</h3>
+      <p>Inline event handlers should be blocked:</p>
+      <button id="inline-button" onclick="document.getElementById('inline-script-result').textContent = '❌ FAILED: Inline script executed'">Test Inline Script</button>
+      <p id="inline-script-result" class="success">✅ (Default) Inline script appears blocked</p>
+    </div>
+    
+    <div class="test-section">
+      <h3>3. DOM Manipulation in Authorized Context</h3>
+      <p>DOM manipulation from authorized scripts should work, even if eval() is blocked:</p>
+      <p id="dynamic-script-result" class="failure">❌ Test failed or didn't run</p>
+      <div id="dynamic-content-area"></div>
+    </div>
+    
+    <div class="test-section">
+      <h3>4. External Script Blocking</h3>
+      <p>External scripts from unauthorized domains should be blocked:</p>
+      <p id="external-script-result" class="failure">❌ Test failed or didn't run</p>
+    </div>
+  </div>
+
+  <!-- This meta tag will store the CSP nonce for our tests -->
+  <meta id="csp-nonce-value" name="csp-nonce" content="NONCE_PLACEHOLDER">
+
+  <!-- This script executes the tests - it has a valid nonce -->
+  <script nonce="NONCE_PLACEHOLDER">
+    // Immediately update nonced script result
+    document.getElementById('nonced-script-result').className = 'success';
+    document.getElementById('nonced-script-result').textContent = '✅ SUCCESS: Script with nonce executed';
+    
+    // Get and display the CSP header
+    fetch(window.location.href)
+      .then(response => {
+        const cspHeader = response.headers.get('content-security-policy');
+        document.getElementById('csp-header').textContent = 'CSP Header: ' + 
+          (cspHeader || 'Not found');
+        
+        // Extract and display nonce
+        const nonce = document.querySelector('meta#csp-nonce-value').getAttribute('content');
+        document.getElementById('nonce-value').textContent = 'Nonce: ' + nonce;
+        
+        // Run remaining tests
+        runTests();
+      })
+      .catch(error => {
+        console.error('Error fetching CSP header:', error);
+        document.getElementById('csp-header').textContent = 'Error fetching CSP header';
+        
+        // Run tests anyway
+        runTests();
+      });
+    
+    function runTests() {
+      // Test 3: DOM manipulation in authorized context
+      try {
+        // This is safe and allowed - direct DOM manipulation
+        document.getElementById('dynamic-script-result').className = 'warning';
+        document.getElementById('dynamic-script-result').textContent = 
+          '⚠️ EXPECTED: DOM manipulation works in authorized context';
+        
+        // Create dynamic content (this is how XSS often works)
+        const dynamicArea = document.getElementById('dynamic-content-area');
+        dynamicArea.innerHTML = '<div style="padding:10px; background:#eee;">This content was dynamically inserted</div>';
+        
+        // Demonstrate DOM-based XSS that would still work
+        // (attackers who can inject into your authorized scripts can still cause harm)
+        const maliciousInput = '<img src="x" onerror="document.getElementById(\'dynamic-content-area\').innerHTML += \'<p>Malicious code executed!</p>\'">';
+        dynamicArea.innerHTML += maliciousInput;
+        
+        // Try eval() to show it doesn't work
+        try {
+          eval('console.log("This should be blocked by CSP")');
+        } catch(evalError) {
+          document.getElementById('dynamic-script-result').textContent += 
+            '\n\n✅ SECURE: eval() correctly blocked by CSP';
+        }
+      } catch(e) {
+        console.error('Dynamic DOM test error:', e);
+        document.getElementById('dynamic-script-result').textContent = 
+          '❌ ERROR: ' + e.message;
+      }
+      
+      // Test 4: External script blocking
+      try {
+        const externalScript = document.createElement('script');
+        externalScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+        
+        // Set up success and failure handlers
+        externalScript.onload = function() {
+          document.getElementById('external-script-result').className = 'failure';
+          document.getElementById('external-script-result').textContent = 
+            '❌ FAILED: External script loaded (CSP not blocking properly)';
+        };
+        
+        externalScript.onerror = function() {
+          document.getElementById('external-script-result').className = 'success';
+          document.getElementById('external-script-result').textContent = 
+            '✅ SUCCESS: External script correctly blocked by CSP';
+        };
+        
+        // Add to page and start loading
+        document.body.appendChild(externalScript);
+      } catch(e) {
+        console.error('External script test error:', e);
+      }
+    }
+    
+    // Click the inline script button to test CSP blocking
+    setTimeout(function() {
+      try {
+        document.getElementById('inline-button').click();
+      } catch(e) {
+        console.error('Inline script test error:', e);
+      }
+    }, 500);
+  </script>
+</body>
+</html>

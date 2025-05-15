@@ -1,0 +1,12 @@
+{
+    "name": "xss-research-tools",
+    "version": "1.0.0",
+    "description": "Tools for XSS research",
+    "main": "xss-test.js",
+    "scripts": {
+      "test": "node xss-test.js"
+    },
+    "dependencies": {
+      "playwright": "^1.30.0"
+    }
+  }
