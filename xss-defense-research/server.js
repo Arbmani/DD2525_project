@@ -21,26 +21,32 @@ app.use(express.urlencoded({ extended: true }));
 // Static files
 app.use('/static', express.static('public'));
 
-// Generate nonce for CSP - this should come BEFORE helmet CSP middleware
+// Generate nonce for CSP
 app.use((req, res, next) => {
-  // Generate a random nonce for each request
   res.locals.nonce = crypto.randomBytes(16).toString('base64');
   next();
 });
 
-// CSP configuration (can be modified for testing different policies)
-const enableCSP = process.env.ENABLE_CSP === 'true';
+// CSP configuration - default to enabled unless explicitly disabled
+const enableCSP = process.env.ENABLE_CSP !== 'false';
 if (enableCSP) {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", (req, res) => `'nonce-${res.locals.nonce}'`],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
+      imgSrc: ["'self'"],
+      fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       baseUri: ["'none'"],
+      connectSrc: ["'self'"],
+      frameAncestors: ["'none'"],
+      formAction: ["'self'"],
+      manifestSrc: ["'self'"],
       requireTrustedTypesFor: ["'script'"],
-      trustedTypes: ["'dompurify-html'", "'dompurify'"],
-      reportUri: ["/csp-report"]
+      trustedTypes: ["dompurify-html", "dompurify"], // Fixed: removed single quotes
+      reportUri: ["/csp-report"],
+      upgradeInsecureRequests: []
     },
   }));
 }
