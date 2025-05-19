@@ -5,7 +5,6 @@ docker stop $(docker ps -q)
 docker build -t xss-test-app .
 
 # Run the Docker container
-docker run -p 3000:3000 -e ENABLE_CSP=true xss-test-app
 docker run -p 3000:3000 xss-test-app
 
 # Access the application
