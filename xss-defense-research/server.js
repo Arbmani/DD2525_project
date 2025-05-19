@@ -74,7 +74,7 @@ app.get('/safe-reflect', (req, res) => {
   `);
 });
 
-// CSP test endpoint (SINGLE IMPLEMENTATION)
+// CSP test endpoint (FIXED IMPLEMENTATION)
 app.get('/csp-test', (req, res) => {
   // Generate a fresh nonce for this request
   const nonce = crypto.randomBytes(16).toString('base64');
@@ -85,12 +85,28 @@ app.get('/csp-test', (req, res) => {
   // Replace ALL instances of the nonce placeholder
   html = html.replace(/NONCE_PLACEHOLDER/g, nonce);
   
-  // For this test route, explicitly set a strict CSP with test policies included
-  res.setHeader(
-    'Content-Security-Policy',
-    `default-src 'self'; script-src 'nonce-${nonce}' https://cdnjs.cloudflare.com; style-src 'unsafe-inline'; require-trusted-types-for 'script'; trusted-types dompurify-html dompurify test-policy test-sanitizer-policy evil-policy; report-uri http://localhost:8888/collect-violations`
-  );
+  // Build CSP as an array for readability, then join without newlines
+  const cspDirectives = [
+    "default-src 'self'",
+    `script-src 'nonce-${nonce}' https://cdnjs.cloudflare.com/ajax/libs/ 'strict-dynamic'`,
+    `style-src 'nonce-${nonce}' 'unsafe-inline'`,
+    "img-src 'self'",
+    "font-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "connect-src 'self'",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "manifest-src 'self'",
+    "require-trusted-types-for 'script'",
+    "trusted-types dompurify test-policy",
+    "report-uri http://localhost:8888/collect-violations"
+  ];
   
+  // Join with semicolons and spaces (no newlines)
+  const cspHeader = cspDirectives.join('; ');
+  
+  res.setHeader('Content-Security-Policy', cspHeader);
   res.send(html);
 });
 

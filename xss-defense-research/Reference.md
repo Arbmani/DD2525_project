@@ -1,3 +1,6 @@
+# Parent Folder
+cd xss-defense-research 
+
 # Removing previous docker - if needed
 docker stop $(docker ps -q)
 

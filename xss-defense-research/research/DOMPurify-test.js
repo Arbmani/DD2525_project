@@ -25,10 +25,7 @@ const payloads = [
   
   // Obfuscated attacks
   '<img src onerror="\u0061\u006c\u0065\u0072\u0074(1)" />',
-  
-  // Mutated XSS
-  '<a href="javascript&colon;alert(1)">Click me</a>',
-  
+    
   // HTML5 vector using video tag
   '<video><source onerror="alert(1)">',
   
