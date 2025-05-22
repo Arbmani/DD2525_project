@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const path = require('path');
 const crypto = require('crypto');
 const { JSDOM } = require('jsdom');
@@ -20,12 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Static files
 app.use('/static', express.static('public'));
-
-// Generate nonce for CSP
-app.use((req, res, next) => {
-  res.locals.nonce = crypto.randomBytes(16).toString('base64');
-  next();
-});
 
 // Create routes for testing
 app.get('/', (req, res) => {
@@ -89,7 +82,7 @@ app.get('/csp-test', (req, res) => {
   const cspDirectives = [
     "default-src 'self'",
     `script-src 'nonce-${nonce}' https://cdnjs.cloudflare.com/ajax/libs/ 'strict-dynamic'`,
-    `style-src 'nonce-${nonce}' 'unsafe-inline'`,
+    `style-src 'nonce-${nonce}'`,
     "img-src 'self'",
     "font-src 'self'",
     "object-src 'none'",

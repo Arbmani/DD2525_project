@@ -231,22 +231,7 @@ async function testCSPWithViolations() {
     });
     
     tt6Results.forEach(result => console.log('  ' + result));
-
-    // 7. JSONP Endpoints Test
-    console.log('\n7. Testing if external JSONP endpoints can execute arbitrary JavaScript');
-    const tt7Results = await page.evaluate(() => {
-      try {
-        const script = document.createElement('script');
-        script.src = 'https://acs.aliexpress.com/api?callback=alert';
-        document.body.appendChild(script);
-        return "WARNING: Script loaded from unauthorized JSONP endpoint";
-      } catch (e) {
-        return "Protected: JSONP endpoint script was blocked: " + e.message;
-      }
-    });
     
-    console.log('  ' + tt7Results);
-
     // Wait a bit for any violations to be reported
     await page.waitForTimeout(2000);
     

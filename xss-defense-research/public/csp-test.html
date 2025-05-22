@@ -52,27 +52,27 @@
     <div class="test-section">
       <h3>1. Nonced Script Execution</h3>
       <p>This script has a nonce and should execute:</p>
-      <p id="nonced-script-result" class="failure">❌ Test failed or didn't run</p>
+      <p id="nonced-script-result" class="failure"> Test failed or didn't run</p>
     </div>
     
     <div class="test-section">
       <h3>2. Inline Script Blocking</h3>
       <p>Inline event handlers should be blocked:</p>
-      <button id="inline-button" onclick="document.getElementById('inline-script-result').textContent = '❌ FAILED: Inline script executed'">Test Inline Script</button>
-      <p id="inline-script-result" class="success">✅ (Default) Inline script appears blocked</p>
+      <button id="inline-button" onclick="document.getElementById('inline-script-result').textContent = ' FAILED: Inline script executed'">Test Inline Script</button>
+      <p id="inline-script-result" class="success"> (Default) Inline script appears blocked</p>
     </div>
     
     <div class="test-section">
       <h3>3. DOM Manipulation in Authorized Context</h3>
       <p>DOM manipulation from authorized scripts should work, even if eval() is blocked:</p>
-      <p id="dynamic-script-result" class="failure">❌ Test failed or didn't run</p>
+      <p id="dynamic-script-result" class="failure"> Test failed or didn't run</p>
       <div id="dynamic-content-area"></div>
     </div>
     
     <div class="test-section">
       <h3>4. External Script Blocking</h3>
       <p>External scripts from unauthorized domains should be blocked:</p>
-      <p id="external-script-result" class="failure">❌ Test failed or didn't run</p>
+      <p id="external-script-result" class="failure"> Test failed or didn't run</p>
     </div>
   </div>
 
@@ -83,7 +83,7 @@
   <script nonce="NONCE_PLACEHOLDER">
     // Immediately update nonced script result
     document.getElementById('nonced-script-result').className = 'success';
-    document.getElementById('nonced-script-result').textContent = '✅ SUCCESS: Script with nonce executed';
+    document.getElementById('nonced-script-result').textContent = ' SUCCESS: Script with nonce executed';
     
     // Get and display the CSP header
     fetch(window.location.href)
@@ -113,7 +113,7 @@
         // This is safe and allowed - direct DOM manipulation
         document.getElementById('dynamic-script-result').className = 'warning';
         document.getElementById('dynamic-script-result').textContent = 
-          '⚠️ EXPECTED: DOM manipulation works in authorized context';
+          ' EXPECTED: DOM manipulation works in authorized context';
         
         // Create dynamic content (this is how XSS often works)
         const dynamicArea = document.getElementById('dynamic-content-area');
@@ -129,12 +129,12 @@
           eval('console.log("This should be blocked by CSP")');
         } catch(evalError) {
           document.getElementById('dynamic-script-result').textContent += 
-            '\n\n✅ SECURE: eval() correctly blocked by CSP';
+            '\n\n SECURE: eval() correctly blocked by CSP';
         }
       } catch(e) {
         console.error('Dynamic DOM test error:', e);
         document.getElementById('dynamic-script-result').textContent = 
-          '❌ ERROR: ' + e.message;
+          ' ERROR: ' + e.message;
       }
       
       // Test 4: External script blocking
@@ -146,13 +146,13 @@
         externalScript.onload = function() {
           document.getElementById('external-script-result').className = 'failure';
           document.getElementById('external-script-result').textContent = 
-            '❌ FAILED: External script loaded (CSP not blocking properly)';
+            ' FAILED: External script loaded (CSP not blocking properly)';
         };
         
         externalScript.onerror = function() {
           document.getElementById('external-script-result').className = 'success';
           document.getElementById('external-script-result').textContent = 
-            '✅ SUCCESS: External script correctly blocked by CSP';
+            ' SUCCESS: External script correctly blocked by CSP';
         };
         
         // Add to page and start loading

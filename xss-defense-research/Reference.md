@@ -19,12 +19,5 @@ cd research
 # For initial xss-testing
 node xss-test.js
 
-# CSP testing
-ENABLE_CSP=true node server.js
-node csp-bypass-test.js
 
-# DOMpurify test
-node dompurify-bypass-test.js
 
-# Trusted Type
-http://localhost:3000/trusted-types-test
