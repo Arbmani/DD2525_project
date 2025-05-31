@@ -25,6 +25,7 @@ cd research
 ```
 node xss-test.js
 ```
+```
 node DOMPurify-test.js
 ```
 
