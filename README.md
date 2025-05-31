@@ -24,7 +24,7 @@ cd research
 ## Then, run each test type the following two commands:
 ```
 node xss-test.js
-
+```
 node DOMPurify-test.js
 ```
 
