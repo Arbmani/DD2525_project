@@ -12,7 +12,7 @@ docker build -t xss-test-app .
 ## Run the Docker container
 docker run -p 3000:3000 xss-test-app
 
-## The server should now be up and running, displaying the message "XSS test server running at http://localhost:3000".To run each test, go to the research folder with:
+## The server should now be up and running,  Access the application by:
 Open http://localhost:3000 in your browser
 
 ## Go to the folder for testing scripts
