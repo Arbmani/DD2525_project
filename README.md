@@ -1,7 +1,7 @@
 You can run the tests by first starting the server and then running each test script. First, navigate to the parent folder using:
 
 ## Parent Folder
-cd xss-defense-research 
+```cd xss-defense-research 
 
 ## Removing previous docker - if needed
 docker stop $(docker ps -q)
